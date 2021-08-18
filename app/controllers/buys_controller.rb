@@ -1,8 +1,7 @@
 class BuysController < ApplicationController
-  before_action :authenticate_user!, only: [:index]
+  before_action :authenticate_user!, only: [:index, :create]
   before_action :set_item, only: [:index, :create]
-  before_action :move_to_index, only: [:index]
-  before_action :sold_out_item, only: [:index]
+  before_action :move_to_index, only: [:index, :create]
 
   def index
     @buy_address = BuyAddress.new
@@ -39,13 +38,7 @@ class BuysController < ApplicationController
   end
 
   def move_to_index
-    unless current_user.id != @item.user_id
-      redirect_to root_path
-    end
-  end
-
-  def sold_out_item
-    redirect_to root_path if @item.buy.present?
+    redirect_to root_path if current_user.id == @item.user_id || @item.buy.present?
   end
 
 end
